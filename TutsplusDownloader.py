@@ -12,7 +12,6 @@ class Tutsplus:
  
     login_url= 'https://tutsplus.com/sign_in'
     login_post = 'https://tutsplus.com/sessions'
-    home_url = 'https://tutsplus.com'
  
     def __init__(self, config):
  
@@ -29,7 +28,7 @@ class Tutsplus:
     # Return the html source for a specified url
     def get_source(self, url, data=None):
  
-        src = self.opener.open(url)
+        src = self.opener.open(url, data)
         return src.read()
  
     # Return the soup for a specified html
@@ -67,8 +66,12 @@ class Tutsplus:
  
         # the course's name
         self.course_title = soup.select('h1')[0].string
-        if not os.path.exists("courses/" + self.course_title) :
-            os.makedirs("courses/" + self.course_title)
+
+        foldername = re.sub('[^A-Za-z0-9 -\/]+', '', self.course_title)
+        foldername = re.sub('[ ]', '-', foldername)
+
+        if not os.path.exists("courses/" + foldername) :
+            os.makedirs("courses/" + foldername)
  
         self.csrf_token = soup.find(attrs={"name":"csrf-token"})['content']
  
@@ -76,9 +79,9 @@ class Tutsplus:
         course_info = self.get_info_from_course(soup)
  
         for video in course_info:
-            print video['link']
+            #print video['link']
             print "[+] Downloading " + video['titolo']
-            name = self.course_title + '/[' + str(self.video_number).zfill(2) + '] ' + video['titolo']
+            name = self.course_title + '/' + str(self.video_number).zfill(2) + '-' + video['titolo']
             self.download_file(video['link'], name, self.csrf_token)
             self.video_number = self.video_number + 1
  
@@ -94,6 +97,8 @@ class Tutsplus:
     def download_file(self,url, name, token):
 
         # NOTE the stream=True parameter
+        name = re.sub('[^A-Za-z0-9 -\/]+', '', name)
+        name = re.sub('[ ]', '-', name)
         name = name + '.mp4'
  
         data = {
@@ -116,6 +121,9 @@ class Tutsplus:
  
             titolo = video.select('.lesson-index__lesson-title')[0].string
             link = video.select('a')[0]['href']
+
+            titolo = re.sub('[^A-Za-z0-9 -]+', '', titolo)
+            titolo = re.sub('[ ]', '-', titolo)
  
             info = {
                 "titolo":titolo,
