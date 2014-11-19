@@ -89,15 +89,10 @@ class Tutsplus:
  
             self.download_course(course)
  
-    # pass in the info of the lesson and it will download the video
-    # lesson = {
-    #   "titolo": 'video title',
-    #   "link" : 'http://link_to_download'
-    # }
  
     # Function who downloads the file itself
     def download_file(self,url, name, token):
-        # name = url.split('/')[-1]
+
         # NOTE the stream=True parameter
         name = name + '.mp4'
  
