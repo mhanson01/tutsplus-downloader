@@ -1,4 +1,5 @@
 username: you@example.com
 password: your-password
 courses:
-    - url to the courses to download
+    - https://code.tutsplus.com/courses/getting-started-with-python
+    - https://code.tutsplus.com/courses/foundational-flask-creating-your-own-static-blog-generator
